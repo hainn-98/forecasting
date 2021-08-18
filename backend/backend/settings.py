@@ -9,6 +9,7 @@ AUTH_USER_MODEL = 'users.User'
 env = environ.Env()
 environ.Env.read_env()
 
+DATE_INPUT_FORMATS = ['%m-%Y']
 SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 TOKEN_EXPIRED_AFTER_SECONDS = 86400
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -35,7 +36,12 @@ INSTALLED_APPS = [
 #    'corsheaders',
     'clients',
     'users',
-    'auth_tokens'
+    'auth_tokens',
+    'cpis',
+    'iips',
+    'import_exports', 
+    'revenue_expenditures',
+    'unemployments'
 ]
 
 MIDDLEWARE = [
