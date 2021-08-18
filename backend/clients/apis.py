@@ -115,7 +115,7 @@ class ClientListUsersApi(APIView):
     class ResponseSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ['id', 'name', 'email', 'birthday', 'role', 'tel', 'created_at', 'updated_at']
+            fields = ['id', 'name', 'email',  'role', 'created_at', 'updated_at']
 
     def get(self, request):
         client = get_client_by(id=request.user.client.id)
