@@ -9,7 +9,7 @@ if __name__ == "__main__":
     parser.add_argument('--organization_id', type=int, required=True)
 
 
-    file_paths = ['file:///home/ngochainguyen/Documents/AIC/dong-nai/cpi_data.xlsx', 'file:///home/ngochainguyen/Documents/AIC/dong-nai/iip_data']
+    file_paths = ['file:///home/ngochainguyen/Documents/AIC/dong-nai/cpi_data.xlsx', 'file:///home/ngochainguyen/Documents/AIC/dong-nai/iip_data.xlsx']
     cpi_indexes = ('CPI', 'food_service', 'cereal', 'food', 'eating_out', 'beverage_cigarette', 'garment', 'housing', 'household_equipment', 'medicine_medical_service', 'communication', 'telecommunication', 'education', 'culture_entertainment_travel', 'other_good_services')
     iip_indexes = ('IIP', 'mining_industry', 'manufacturing_processing_industry', 'gas_electricity_industry', 'waste_treatment_water_supply', 'mineral_exploitation', 'food', 'cigarette', 'textile', 'costume', 'leather_product', 'paper_product', 'chemical_product', 'plastic_product',
                 'non_metalic_mineral_product', 'prefabricated_metal_product', 'electrical_product', 'other_products', 'motor_vehicle', 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         # convert date in the format you want
         formatted_date = current_Date.strftime('%Y-%m-%d %H:%M:%S')
         for path in file_paths:
-            data = pd.read_excel(file_paths[0], header=None)
+            data = pd.read_excel(path, header=None)
             df = data.iloc[:, 1:]
             for time in range(df.shape[1]):
                 data = df.iloc[:, time]
