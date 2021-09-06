@@ -1,10 +1,11 @@
 from django.db import models
+from django.utils.translation import ungettext
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
-
+from .models import Unemployment
 from .services import *
 from .permissions import *
 from utils.serializer_validator import validate_serializer
@@ -105,7 +106,10 @@ class UnemploymentListApi(APIView):
         end_year = int(str(end)[0:4])
         end_month = int(str(end)[4:])
         user = request.user
-        unemployments = list(get_unemployment_by(organization=user.client, month__lte=end_month, month__gte=start_month, year__lte=end_year, year__gte=start_year))
+        unemployments = set(list(get_unemployment_by(organization=user.client, month__gte=start_month, year=start_year)) + \
+                list(get_unemployment_by(organization=user.client, year__gte=start_year, year__lte=end_year)) + \
+                list(get_unemployment_by(organization=user.client, month__lte=end_month, year=end_year)))
+        
         response_serializer = self.ResponseSerializer(unemployments, many=True)
         return Response({
             'unemployments': response_serializer.data
