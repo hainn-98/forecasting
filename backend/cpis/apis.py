@@ -118,7 +118,10 @@ class CpiListApi(APIView):
         end_year = int(str(end)[0:4])
         end_month = int(str(end)[4:])
         user = request.user
-        cpis = list(get_cpi_by(organization=user.client, month__lte=end_month, month__gte=start_month, year__lte=end_year, year__gte=start_year))
+        cpis = list(get_cpi_by(organization=user.client, month__gte=start_month, year=start_year)) + \
+                list(get_cpi_by(organization=user.client, year__gte=start_year, year__lte=end_year)) + \
+                list(get_cpi_by(organization=user.client, month__lte=end_month, year=end_year))
+            
         response_serializer = self.ResponseSerializer(cpis, many=True)
         return Response({
             'cpis': response_serializer.data
