@@ -89,7 +89,9 @@ class RevenueExpenditureListApi(APIView):
         end_year = int(str(end)[0:4])
         end_month = int(str(end)[4:])
         user = request.user
-        revenue_expenditures = list(get_revenue_expenditure_by(organization=user.client, month__lte=end_month, month__gte=start_month, year__lte=end_year, year__gte=start_year))
+        revenue_expenditures = list(get_revenue_expenditure_by(organization=user.client, month__gte=start_month, year=start_year)) + \
+                list(get_revenue_expenditure_by(organization=user.client, year__gte=start_year, year__lte=end_year)) + \
+                list(get_revenue_expenditure_by(organization=user.client, month__lte=end_month, year=end_year))
         response_serializer = self.ResponseSerializer(revenue_expenditures, many=True)
         return Response({
             'revenue_expenditures': response_serializer.data
