@@ -89,7 +89,9 @@ class ImportExportListApi(APIView):
         end_year = int(str(end)[0:4])
         end_month = int(str(end)[4:])
         user = request.user
-        import_exports = list(get_import_export_by(organization=user.client, month__lte=end_month, month__gte=start_month, year__lte=end_year, year__gte=start_year))
+        import_exports = list(get_import_export_by(organization=user.client, month__gte=start_month, year=start_year)) + \
+                list(get_import_export_by(organization=user.client, year__gte=start_year, year__lte=end_year)) + \
+                list(get_import_export_by(organization=user.client, month__lte=end_month, year=end_year))
         response_serializer = self.ResponseSerializer(import_exports, many=True)
         return Response({
             'import_exports': response_serializer.data
