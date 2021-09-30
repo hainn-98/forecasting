@@ -7,6 +7,7 @@ from rest_framework import status
 from .services import *
 from .permissions import *
 from utils.serializer_validator import validate_serializer
+from .models import Cpi
 
 
 class AddCpiApi(APIView):
@@ -118,10 +119,10 @@ class CpiListApi(APIView):
         end_year = int(str(end)[0:4])
         end_month = int(str(end)[4:])
         user = request.user
-        cpis = list(get_cpi_by(organization=user.client, month__gte=start_month, year=start_year)) + \
-                list(get_cpi_by(organization=user.client, year__gte=start_year, year__lte=end_year)) + \
-                list(get_cpi_by(organization=user.client, month__lte=end_month, year=end_year))
-            
+        if start_year != end_year:
+            cpis = set(Cpi.objects.filter(organization=user.client, month__gte=start_month, year=start_year) | Cpi.objects.filter(organization=user.client, year__gt=start_year, year__lt=end_year) | Cpi.objects.filter(organization=user.client, month__lte=end_month, year=end_year))              
+        else:
+            cpis = set(Cpi.objects.filter(organization=user.client, month__lte=end_month, month__gte=start_month, year=start_year))
         response_serializer = self.ResponseSerializer(cpis, many=True)
         return Response({
             'cpis': response_serializer.data

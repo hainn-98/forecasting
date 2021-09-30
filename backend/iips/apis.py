@@ -7,6 +7,7 @@ from rest_framework import status
 from .services import *
 from .permissions import *
 from utils.serializer_validator import validate_serializer
+from .models import Iip
 
 
 class AddIipApi(APIView):
@@ -84,7 +85,7 @@ class UpdateIipApi(APIView):
         water_supply = serializers.FloatField(required=False)
         gas_electricity = serializers.FloatField(required=False)
         other_products = serializers.FloatField(required=False)       
-        base_period = serializers.CharField(max_length=50, required=True)
+        base_period = serializers.CharField(max_length=50, required=False)
 
     class ResponseSerializer(serializers.ModelSerializer):
         class Meta:
@@ -133,9 +134,10 @@ class IipListApi(APIView):
         end_year = int(str(end)[0:4])
         end_month = int(str(end)[4:])
         user = request.user
-        iips = list(get_iip_by(organization=user.client, month__gte=start_month, year=start_year)) + \
-            list(get_iip_by(organization=user.client, year__gte=start_year, year__lte=end_year)) + \
-            list(get_iip_by(organization=user.client, month__lte=end_month, year=end_year))
+        if start_year != end_year:
+            iips = set(Iip.objects.filter(organization=user.client, month__gte=start_month, year=start_year) | Iip.objects.filter(organization=user.client, year__gt=start_year, year__lt=end_year) | Iip.objects.filter(organization=user.client, month__lte=end_month, year=end_year))              
+        else:
+            iips = set(Iip.objects.filter(organization=user.client, month__gte=start_month, month__lte=end_month, year=start_year))
         response_serializer = self.ResponseSerializer(iips, many=True)
         return Response({
             'iips': response_serializer.data

@@ -82,7 +82,9 @@ def reset_password(data):
     elif user.reset_password_token_expired_at < timezone.now():
         raise TokenExpired
     user.set_password(data.get('password'))
-    user.save(update_fields=['password'])
+    user.change_init_password = True
+    user.is_active = True
+    user.save(update_fields=['password', 'change_init_password', 'is_active'])
     return user
 
 def authenticate_user(email, password):

@@ -1,5 +1,5 @@
 from safedelete.managers import SafeDeleteManager
 
 
-class ImportExportManager(SafeDeleteManager):
+class ImportManager(SafeDeleteManager):
     pass

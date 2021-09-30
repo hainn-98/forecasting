@@ -11,6 +11,7 @@ environ.Env.read_env()
 
 DATE_INPUT_FORMATS = ['%m-%Y']
 SENDGRID_API_KEY = env('SENDGRID_API_KEY')
+EMAIL_TEST = env('EMAIL_TEST')
 TOKEN_EXPIRED_AFTER_SECONDS = 86400
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'auth_tokens',
     'cpis',
     'iips',
-    'import_exports', 
+    'imports',
+    'exports', 
     'revenue_expenditures',
     'unemployments'
 ]

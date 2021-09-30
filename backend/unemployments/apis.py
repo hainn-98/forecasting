@@ -9,7 +9,8 @@ from .models import Unemployment
 from .services import *
 from .permissions import *
 from utils.serializer_validator import validate_serializer
-import logging
+from .models import Unemployment
+
 
 class AddUnemploymentApi(APIView):
     permission_classes = [ExpertPermission, ]
@@ -75,22 +76,6 @@ class DeleteUnemploymentApi(APIView):
         return Response({
             'unemployment': response_serializer.data
         }, status=status.HTTP_200_OK)
-    
-# class UnemploymentListApi(APIView):
-#     permission_classes = [IsAuthenticated, ]
-
-#     class ResponseSerializer(serializers.ModelSerializer):
-#         class Meta:
-#             model = Unemployment
-#             fields = '__all__'
-
-#     def get(self, request):
-#         user = request.user
-#         unemployments = list(get_unemployment_by(organization=user.client, month=12))
-#         response_serializer = self.ResponseSerializer(unemployments, many=True)
-#         return Response({
-#             'unemployments': response_serializer.data
-#         }, status=status.HTTP_200_OK)
 
 class UnemploymentListApi(APIView):
     permission_classes = [IsAuthenticated, ]
@@ -106,10 +91,7 @@ class UnemploymentListApi(APIView):
         end_year = int(str(end)[0:4])
         end_month = int(str(end)[4:])
         user = request.user
-        unemployments = set(list(get_unemployment_by(organization=user.client, month__gte=start_month, year=start_year)) + \
-                list(get_unemployment_by(organization=user.client, year__gte=start_year, year__lte=end_year)) + \
-                list(get_unemployment_by(organization=user.client, month__lte=end_month, year=end_year)))
-        
+        unemployments = list(Unemployment.objects.filter(organization=user.client, month__gte=start_month, year=start_year) | Unemployment.objects.filter(organization=user.client, year__gt=start_year, year__lt=end_year) | Unemployment.objects.filter(organization=user.client, month__lte=end_month, year=end_year))              
         response_serializer = self.ResponseSerializer(unemployments, many=True)
         return Response({
             'unemployments': response_serializer.data

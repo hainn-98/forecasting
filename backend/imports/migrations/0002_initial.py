@@ -11,19 +11,19 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('clients', '0001_initial'),
-        ('cpis', '0001_initial'),
+        ('imports', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cpi',
+            model_name='import',
             name='creator',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='cpi_creators', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='import_creators', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name='cpi',
+            model_name='import',
             name='organization',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='cpi_organizations', to='clients.client'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='import_organizations', to='clients.client'),
         ),
     ]
